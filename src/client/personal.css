@@ -1,0 +1,46 @@
+/* ---------------------------------------------------------------------------
+   Personal overrides for this instance, kept in one file loaded after
+   styles.css so upstream changes to styles.css merge without conflicts.
+
+   Snappier on low-powered machines: blurs are expensive to paint, so panels
+   are solid rather than frosted glass, nothing animates through a blur, and
+   every duration runs at 60% (motion is scaled by --motion everywhere, CSS
+   and script alike).
+   ------------------------------------------------------------------------ */
+
+/* Frosted panels become solid: the translucent chrome tokens take their
+   theme's solid colour, so text over the canvas stays as legible as before. */
+:root,
+[data-theme] {
+	--chrome: var(--chrome-solid);
+	--chrome-strong: var(--chrome-solid);
+}
+
+/* !important because each panel sets its own blur in its own file, some of
+   them loaded later than this one. */
+*,
+*::before,
+*::after {
+	-webkit-backdrop-filter: none !important;
+	backdrop-filter: none !important;
+}
+
+/* Entrances and exits that animate a blur keep their fade and scale without
+   it. !important outranks the animation's own value. */
+.react-flow__node.display-morph > :first-child,
+.md-image,
+.board-tile[data-leaving],
+.ai-preview-stage,
+.backlink-snapshot img,
+.list-empty[data-leaving],
+.widget-main:has(.widget-drop) .widget-body {
+	filter: none !important;
+}
+
+/* Only when motion isn't reduced, so the reduced-motion setting still wins,
+   and only without the playground's own speed setting. */
+@media (prefers-reduced-motion: no-preference) {
+	:root:not([data-motion]) {
+		--motion: 0.6;
+	}
+}

@@ -6,6 +6,7 @@ import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/shantell-sans/infm.css";
 import "@xyflow/react/dist/style.css";
 import "./styles.css";
+import "./personal.css";
 import { App } from "./App.tsx";
 import { SignInRoute } from "./auth/AccessGate.tsx";
 import { ErrorBoundary } from "./ErrorBoundary.tsx";
