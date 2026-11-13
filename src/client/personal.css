@@ -3,9 +3,10 @@
    styles.css so upstream changes to styles.css merge without conflicts.
 
    Snappier on low-powered machines: blurs are expensive to paint, so panels
-   are solid rather than frosted glass, nothing animates through a blur, and
-   every duration runs at 60% (motion is scaled by --motion everywhere, CSS
-   and script alike).
+   are solid rather than frosted glass, nothing animates through a blur, the
+   canvas drops its dot grid, sticky tilt and wide shadows, and every
+   duration runs at 60% (motion is scaled by --motion everywhere, CSS and
+   script alike).
    ------------------------------------------------------------------------ */
 
 /* Frosted panels become solid: the translucent chrome tokens take their
@@ -35,6 +36,40 @@
 .list-empty[data-leaving],
 .widget-main:has(.widget-drop) .widget-body {
 	filter: none !important;
+}
+
+/* The canvas: lighter to repaint while panning, zooming and dragging. */
+
+/* The dot grid is an SVG pattern repainted over the whole screen on every
+   frame of a pan; the plain ground colour costs nothing. */
+.react-flow__background {
+	display: none;
+}
+
+/* Stickies sit straight: rotated text can't take the cheap raster path.
+   !important to outrank the per-sticky tilt StickyNode sets inline; a picked
+   up sticky still tips and lifts. */
+.sticky {
+	--tilt: 0deg !important;
+}
+
+/* Shadows with small blur radii, one layer each, far cheaper to raster at
+   every zoom step than the originals' 18-44px blurs. */
+:root,
+[data-theme="light"] {
+	--shadow-rest: 0 1px 2px rgb(23 25 28 / 10%);
+	--shadow-hover: 0 2px 5px rgb(23 25 28 / 12%);
+	--shadow-lifted: 0 6px 12px rgb(23 25 28 / 18%);
+	--sticky-shadow: 0 2px 3px rgb(0 0 0 / 14%);
+	--sticky-shadow-lifted: 0 6px 10px rgb(0 0 0 / 22%);
+}
+
+[data-theme="dark"] {
+	--shadow-rest: 0 1px 2px rgb(0 0 0 / 40%);
+	--shadow-hover: 0 2px 5px rgb(0 0 0 / 45%);
+	--shadow-lifted: 0 6px 12px rgb(0 0 0 / 55%);
+	--sticky-shadow: 0 2px 3px rgb(0 0 0 / 45%);
+	--sticky-shadow-lifted: 0 6px 10px rgb(0 0 0 / 60%);
 }
 
 /* Only when motion isn't reduced, so the reduced-motion setting still wins,
